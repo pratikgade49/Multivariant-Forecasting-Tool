@@ -7,18 +7,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Set working directory
 WORKDIR /app/backend
 
-# Install Python dependencies
+# Copy backend requirements and install Python dependencies
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend source code
 COPY backend/ ./
 
-# Make the start script executable
-COPY backend/start.sh ./
-RUN chmod +x start.sh
+# Ensure start.sh has correct permissions and line endings
+RUN chmod +x start.sh && dos2unix start.sh || true
 
 # Expose backend port
 EXPOSE 8000
