@@ -1,26 +1,18 @@
-FROM node:20-alpine
+# Stage 1: Build Frontend
+FROM node:20-alpine AS frontend-build
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install dependencies
 COPY package*.json ./
-
-# Install dependencies
 RUN npm ci
 
-# Copy source code
+# Copy source code and build frontend
 COPY . .
-
-# Expose port
-EXPOSE 5173
-
-# Start development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-
+RUN npm run build
 
 # Stage 2: Python Backend with Frontend Static Files
 FROM python:3.12-slim
-WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,25 +21,25 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory to backend
+# Set working directory
 WORKDIR /app/backend
 
-# Copy backend requirements and install dependencies
+# Copy backend requirements and install Python dependencies
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code
+# Copy backend source code
 COPY backend/ ./
 
-# Copy frontend build from frontend-build stage
-# COPY --from=frontend-build /app/dist ../static
+# Copy frontend build output to backend static directory
+COPY --from=frontend-build /app/dist /app/backend/static
 
 # Make the start script executable
 COPY backend/start.sh ./
 RUN chmod +x start.sh
 
-# Expose port
+# Expose backend port
 EXPOSE 8000
 
-# Command to run the application with proper setup sequence
+# Start backend application
 CMD ["./start.sh"]
