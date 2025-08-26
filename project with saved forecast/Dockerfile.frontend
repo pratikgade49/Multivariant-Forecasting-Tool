@@ -3,12 +3,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci
-
-# Copy source code
+# Copy all files from current directory into container
 COPY . .
+
+# Install dependencies
+RUN npm ci
 
 # Expose Vite dev server port
 EXPOSE 5173
