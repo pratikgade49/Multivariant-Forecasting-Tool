@@ -1,10 +1,21 @@
-# Stage 1: Build Frontend
-FROM node:20-alpine AS frontend-build
+FROM node:20-alpine
+
 WORKDIR /app
+
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm ci
+
+# Copy source code
 COPY . .
-RUN npm run build
+
+# Expose port
+EXPOSE 5173
+
+# Start development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
 # Stage 2: Python Backend with Frontend Static Files
 FROM python:3.12-slim
@@ -27,8 +38,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY backend/ ./
 
+# Create directory for static files
+RUN mkdir -p /app/static
+
 # Copy frontend build from frontend-build stage
-COPY --from=frontend-build /app/dist ../static
+COPY --from=frontend-build /app/dist /app/static
+
+# Create a simple script to serve static files
+RUN echo 'from fastapi.staticfiles import StaticFiles\n\
+# Add this to your FastAPI app in main.py\n\
+app.mount("/", StaticFiles(directory="/app/static", html=True), name="static")' > serve_static.py
 
 # Make the start script executable
 COPY backend/start.sh ./
