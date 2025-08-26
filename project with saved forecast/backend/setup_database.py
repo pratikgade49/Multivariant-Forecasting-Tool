@@ -15,8 +15,8 @@ def setup_tables():
         
         # Check environment variables
         print("Database Configuration:")
-        print(f"Host: {os.getenv('DB_HOST', 'localhost')}")
-        print(f"Port: {os.getenv('DB_PORT', '5433')}")
+        print(f"Host: {os.getenv('DB_HOST', '172.17.0.1')}")
+        print(f"Port: {os.getenv('DB_PORT', '5432')}")
         print(f"User: {os.getenv('DB_USER', 'postgres')}")
         print(f"Database: {os.getenv('DB_NAME', 'forecasting_db')}")
         print()
