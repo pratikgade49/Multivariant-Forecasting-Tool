@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Install dependencies
-RUN npm ci
+RUN npm install --force
 
 # Expose Vite dev server port
 EXPOSE 5173
