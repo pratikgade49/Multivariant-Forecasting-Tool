@@ -17,6 +17,7 @@ EXPOSE 5173
 # Start development server
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
+
 # Stage 2: Python Backend with Frontend Static Files
 FROM python:3.12-slim
 WORKDIR /app
@@ -38,16 +39,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY backend/ ./
 
-# Create directory for static files
-RUN mkdir -p /app/static
-
 # Copy frontend build from frontend-build stage
-COPY --from=frontend-build /app/dist /app/static
-
-# Create a simple script to serve static files
-RUN echo 'from fastapi.staticfiles import StaticFiles\n\
-# Add this to your FastAPI app in main.py\n\
-app.mount("/", StaticFiles(directory="/app/static", html=True), name="static")' > serve_static.py
+# COPY --from=frontend-build /app/dist ../static
 
 # Make the start script executable
 COPY backend/start.sh ./
