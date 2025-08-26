@@ -13,9 +13,6 @@ COPY . .
 # Expose frontend dev server port
 EXPOSE 5173
 
-# Start frontend dev server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
-
 # Stage 2: Python Backend
 FROM python:3.12-slim
 
@@ -43,4 +40,4 @@ RUN chmod +x start.sh
 EXPOSE 8000
 
 # Start backend
-CMD ["./start.sh"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "&&", "./start.sh"]
