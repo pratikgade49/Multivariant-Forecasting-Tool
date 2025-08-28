@@ -6,6 +6,8 @@ WORKDIR /app
 # Copy all files from current directory into container
 COPY . .
 
+RUN npm install -g create-vite
+
 # Install dependencies
 RUN npm install --force
 
