@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5173
 
 # Start dev server using npx to ensure local vite is found
-CMD ["npx", "vite", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev--","--host", "0.0.0.0"]
