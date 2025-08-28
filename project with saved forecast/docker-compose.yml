@@ -6,7 +6,8 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
+      - ./src:/app/src
+      - ./public:/app/public
     command: npx vite --host 0.0.0.0
 
   backend:

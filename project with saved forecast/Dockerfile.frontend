@@ -1,15 +1,15 @@
-# Frontend Dev Server
+# Use Node Alpine for lightweight image
 FROM node:20-alpine
 
+# Set working directory
 WORKDIR /app
 
-# Copy all files from current directory into container
+# Install dependencies first to leverage Docker cache
+COPY package*.json ./
+RUN npm install
+
+# Copy all project files
 COPY . .
-
-RUN npm install -g create-vite
-
-# Install dependencies
-RUN npm install --force
 
 # Expose Vite dev server port
 EXPOSE 5173
