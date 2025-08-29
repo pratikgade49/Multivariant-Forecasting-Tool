@@ -5287,4 +5287,4 @@ if __name__ == "__main__":
     print("📈 Frontend should be available on http://localhost:5173")
     print("⏹️  Press Ctrl+C to stop the server\n")
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="10.213.1.29", port=8000)
