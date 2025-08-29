@@ -8,6 +8,8 @@ services:
     volumes:
     - ./src:/app/src
     - ./public:/app/public
+    depends_on:
+      - backend
 
     command: npx vite --host 0.0.0.0
 
