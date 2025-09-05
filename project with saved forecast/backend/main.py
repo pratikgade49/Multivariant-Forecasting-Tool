@@ -1187,7 +1187,7 @@ class ForecastingEngine:
     def arima_forecast(data: pd.DataFrame, periods: int) -> tuple:
         """Actual ARIMA/ARIMAX forecasting using statsmodels"""
         from statsmodels.tsa.arima.model import ARIMA
-        from pmdarima import auto_arima
+        from pmdarima import auto_arima # type: ignore
         import warnings
 
         y = data['quantity'].values
@@ -1576,7 +1576,7 @@ class ForecastingEngine:
     def sarima_forecast(data: pd.DataFrame, periods: int) -> tuple:
         """Actual SARIMA/SARIMAX forecasting using statsmodels"""
         from statsmodels.tsa.arima.model import ARIMA
-        from pmdarima import auto_arima
+        from pmdarima import auto_arima # type: ignore
         import warnings
 
         y = data['quantity'].values
@@ -1744,7 +1744,7 @@ class ForecastingEngine:
     @staticmethod
     def prophet_like_forecast(data: pd.DataFrame, periods: int) -> tuple:
         """Actual Facebook Prophet forecasting with external regressors support"""
-        from prophet import Prophet
+        from prophet import Prophet # type: ignore
         import warnings
 
         y = data['quantity'].values
@@ -5282,7 +5282,7 @@ if __name__ == "__main__":
     import uvicorn # type: ignore
     print("🚀 Advanced Multi-variant Forecasting API with MySQL")
     print("📊 23 Algorithms + Best Fit Available")
-    print("🗄️  MySQL Database Integration")
+    print("🗄️  PostgreSQL Database Integration")
     print("🌐 Server starting on http://localhost:8000")
     print("📈 Frontend should be available on http://localhost:5173")
     print("⏹️  Press Ctrl+C to stop the server\n")

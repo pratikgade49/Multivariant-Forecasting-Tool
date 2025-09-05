@@ -27,16 +27,16 @@
 ## 📊 Installation & Setup
 
 ### Prerequisites
-- Python 3.8+
-- MySQL Server 8.0+
+- Python >= 3.8 , <= 3.12
+- PostgreSQL Server 17.5
 - pip package manager
 
 ### Quick Start
 
 1. **Prerequisites**
-   - Ensure MySQL server is running
+   - Install PostgreSQL 17.5
    - Create database: `CREATE DATABASE forecasting_db;`
-   - Grant permissions to your MySQL user
+   - Grant permissions to your PostgreSQL user
 
 2. **Install Dependencies**
    ```bash
@@ -55,7 +55,7 @@
    # Copy environment template
    cp .env.example .env
    
-   # Edit .env file with your MySQL credentials
+   # Edit .env file with your PostgreSQL credentials
    nano .env
    ```
 
@@ -208,7 +208,7 @@ Duplicate records are skipped during upload and reported in the response.
 
 ### 1. Upload Data
 - Upload Excel/CSV files through the web interface
-- Data is automatically stored in MySQL database
+- Data is automatically stored in PostgreSQL database
 - Duplicates are prevented and reported
 
 ### 2. Configure Forecast
@@ -312,7 +312,7 @@ The API provides detailed error messages for:
 ## 🔧 Troubleshooting
 
 ### Database Issues
-1. **Connection Failed**: Check MySQL server status, credentials, and ensure database exists
+1. **Connection Failed**: Check PostgreSQL server status, credentials, and ensure database exists
 2. **Permission Denied**: Ensure user has CREATE TABLE/INSERT/SELECT privileges
 3. **Tables Not Found**: Run `python setup_database.py`
 4. **Database Not Found**: Create database manually: `CREATE DATABASE forecasting_db;`
@@ -344,11 +344,11 @@ The application provides real-time database statistics including:
 - Number of unique products, customers, and locations
 
 ### Data Persistence
-- All uploaded data is permanently stored in MySQL
+- All uploaded data is permanently stored in PostgreSQL
 - No need to re-upload files for subsequent analyses
 - Data can be queried and filtered efficiently
 
 ### Backup and Recovery
-- Regular MySQL backups recommended
-- Export data using standard MySQL tools
+- Regular PostgreSQL backups recommended
+- Export data using standard PostgreSQL tools
 - Database schema can be recreated using setup script

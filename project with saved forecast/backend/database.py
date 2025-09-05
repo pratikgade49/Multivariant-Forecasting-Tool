@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Database configuration and models for PostgreSQL integration
+
 """
 
 from sqlalchemy import create_engine, Column, Integer, String, Float, Date, DateTime, UniqueConstraint, Boolean, DECIMAL, Text # type: ignore
@@ -12,7 +13,7 @@ from datetime import datetime
 
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
+# Make sure which credantals are used to connect locally or in cloud environment
 DB_HOST = os.getenv("DB_HOST", "172.17.0.1")
 DB_PORT = os.getenv("DB_PORT", "5432")  # Changed from 3306 to 5432 for PostgreSQL
 DB_USER = os.getenv("DB_USER", "postgres")  # Changed from root to postgres

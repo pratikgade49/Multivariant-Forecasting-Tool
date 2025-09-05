@@ -54,6 +54,9 @@ export const AccuracyTracker: React.FC<AccuracyTrackerProps> = ({ configHash }) 
     if (!configHash) return;
     
     setLoading(true);
+
+    // Resolve issue for Accuracy Tracker
+    
     try {
       const history = await ApiService.getAccuracyHistory(configHash, timeRange);
       setAccuracyHistory(history);
