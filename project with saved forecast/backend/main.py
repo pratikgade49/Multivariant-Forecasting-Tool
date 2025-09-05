@@ -5021,6 +5021,8 @@ def generate_forecast(
 
 from fastapi.responses import StreamingResponse # type: ignore
 
+from fastapi.responses import StreamingResponse # type: ignore
+ 
 @app.post("/download_forecast_excel")
 async def download_forecast_excel(
     request: dict,
@@ -5032,16 +5034,16 @@ async def download_forecast_excel(
         result = ForecastResult(**request['forecastResult'])
         forecast_by = request.get('forecastBy', '')
         selected_item = request.get('selectedItem', '')
-
+ 
         # Prepare data with selected items
         hist = result.historicData
         fore = result.forecastData
-
+ 
         # Determine selected items
         product = ''
         customer = ''
         location = ''
-
+ 
         # Handle combination data from result
         if result.combination:
             product = result.combination.get('product', product)
@@ -5055,11 +5057,11 @@ async def download_forecast_excel(
                 customer = selected_item
             elif forecast_by == 'location':
                 location = selected_item
-
+ 
         # Create comprehensive Excel data
         hist_rows = []
         fore_rows = []
-
+ 
         for d in hist:
             hist_rows.append({
                 "Product": product,
@@ -5070,7 +5072,7 @@ async def download_forecast_excel(
                 "Quantity": d.quantity,
                 "Type": "Historical"
             })
-
+ 
         for d in fore:
             fore_rows.append({
                 "Product": product,
@@ -5081,12 +5083,12 @@ async def download_forecast_excel(
                 "Quantity": d.quantity,
                 "Type": "Forecast"
             })
-
+ 
         all_rows = hist_rows + fore_rows
-
+ 
         # Create DataFrame
         df = pd.DataFrame(all_rows)
-
+ 
         # Add configuration details
         config_df = pd.DataFrame([{
             "Algorithm": result.selectedAlgorithm,
@@ -5097,16 +5099,16 @@ async def download_forecast_excel(
             "Historic Periods": len(result.historicData),
             "Forecast Periods": len(result.forecastData)
         }])
-
+ 
         # Write to Excel in memory
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
             # Main forecast data
             df.to_excel(writer, index=False, sheet_name="Forecast Data")
-
+ 
             # Configuration details
             config_df.to_excel(writer, index=False, sheet_name="Configuration")
-
+ 
             # If multiple algorithms were compared, include them
             if result.allAlgorithms:
                 algo_data = []
@@ -5120,9 +5122,9 @@ async def download_forecast_excel(
                     })
                 algo_df = pd.DataFrame(algo_data)
                 algo_df.to_excel(writer, index=False, sheet_name="All Algorithms")
-
+ 
         output.seek(0)
-
+ 
         # Create filename with selected items - sanitize for filesystem
         filename_parts = []
         if product:
@@ -5138,19 +5140,19 @@ async def download_forecast_excel(
             safe_location = "".join(c for c in str(location) if c.isalnum() or c in (' ', '-', '_')).strip()
             if safe_location:
                 filename_parts.append(safe_location)
-
+ 
         filename_base = "_".join(filename_parts) if filename_parts else "forecast"
         filename = f"{filename_base}_forecast_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-
+ 
         return StreamingResponse(
-            output, 
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            output,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
-
+ 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating Excel: {str(e)}")
-
+ 
 @app.post("/download_multi_forecast_excel")
 async def download_multi_forecast_excel(
     request: dict,
@@ -5160,17 +5162,17 @@ async def download_multi_forecast_excel(
     """Download multi-forecast data as Excel with all combinations"""
     try:
         multi_result = MultiForecastResult(**request['multiForecastResult'])
-
+ 
         # Prepare comprehensive data for all combinations
         all_data = []
         summary_data = []
-
+ 
         for result in multi_result.results:
             combination = result.combination or {}
             product = combination.get('product', '')
             customer = combination.get('customer', '')
             location = combination.get('location', '')
-
+ 
             # Fix: For simple multi-select mode, combination may be a single dimension with multiple items
             # If combination is empty or missing keys, try to get from selectedItems in summary or elsewhere
             if not product and not customer and not location:
@@ -5189,7 +5191,7 @@ async def download_multi_forecast_excel(
                         customer = dim_value_str
                     elif dim_name == 'location':
                         location = dim_value_str
-
+ 
             # Add summary row for this combination
             summary_data.append({
                 "Product": product,
@@ -5203,7 +5205,7 @@ async def download_multi_forecast_excel(
                 "Historic_Periods": len(result.historicData),
                 "Forecast_Periods": len(result.forecastData)
             })
-
+ 
             # Add historical data
             for d in result.historicData:
                 all_data.append({
@@ -5217,7 +5219,7 @@ async def download_multi_forecast_excel(
                     "Algorithm": result.selectedAlgorithm,
                     "Accuracy": result.accuracy
                 })
-
+ 
             # Add forecast data
             for d in result.forecastData:
                 all_data.append({
@@ -5231,11 +5233,11 @@ async def download_multi_forecast_excel(
                     "Algorithm": result.selectedAlgorithm,
                     "Accuracy": result.accuracy
                 })
-
+ 
         # Create DataFrames
         all_df = pd.DataFrame(all_data)
         summary_df = pd.DataFrame(summary_data)
-
+ 
         # Create overall summary
         overall_summary = pd.DataFrame([{
             "Total_Combinations": multi_result.totalCombinations,
@@ -5247,37 +5249,38 @@ async def download_multi_forecast_excel(
             "Worst_Combination": f"{multi_result.summary['worstCombination']['combination'].get('product', '')} → {multi_result.summary['worstCombination']['combination'].get('customer', '')} → {multi_result.summary['worstCombination']['combination'].get('location', '')}",
             "Worst_Accuracy": multi_result.summary['worstCombination']['accuracy']
         }])
-
+ 
         # Write to Excel in memory
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
             # All forecast data
             all_df.to_excel(writer, index=False, sheet_name="All Forecast Data")
-
+ 
             # Summary by combination
             summary_df.to_excel(writer, index=False, sheet_name="Combination Summary")
-
+ 
             # Overall summary
             overall_summary.to_excel(writer, index=False, sheet_name="Overall Summary")
-
+ 
             # Failed combinations if any
             if multi_result.summary['failedCombinations'] > 0:
                 failed_df = pd.DataFrame(multi_result.summary['failedDetails'])
                 failed_df.to_excel(writer, index=False, sheet_name="Failed Combinations")
-
+ 
         output.seek(0)
-
+ 
         # Create filename
         filename = f"multi_forecast_{multi_result.totalCombinations}combinations_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-
+ 
         return StreamingResponse(
-            output, 
-            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            output,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
-
+ 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating multi-forecast Excel: {str(e)}")
+    
 if __name__ == "__main__":
     import uvicorn # type: ignore
     print("🚀 Advanced Multi-variant Forecasting API with MySQL")
