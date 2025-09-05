@@ -14,7 +14,7 @@ import {
 import { BarChart3, TrendingUp, TrendingDown, Minus, Target, Award, Brain, Eye, EyeOff, Plus, GitCompare } from 'lucide-react';
 import { Terminal } from 'lucide-react';
 import { Save } from 'lucide-react';
-import { ForecastResult, ForecastConfig } from '../services/api';
+import { ForecastResult, ForecastConfig, API_BASE_URL } from '../services/api';
 import { saveAs } from 'file-saver';
 import { AdvancedCharts } from './AdvancedCharts';
 import { AccuracyTracker } from './AccuracyTracker';
@@ -65,7 +65,7 @@ export const ForecastResults: React.FC<ForecastResultsProps> = ({
       };
       
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/download_forecast_excel', {
+      const response = await fetch(`${API_BASE_URL}/download_forecast_excel`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

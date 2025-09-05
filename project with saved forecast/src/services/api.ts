@@ -1,5 +1,5 @@
 // const API_BASE_URL = 'http://10.213.1.29:8000';
-const API_BASE_URL = 'http://107.23.151.16:8000';
+export const API_BASE_URL = 'http://107.23.151.16:8000';
 
 export interface UploadResponse {
   message: string;
