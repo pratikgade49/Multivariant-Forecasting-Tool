@@ -74,7 +74,7 @@ export const MultiForecastResults: React.FC<MultiForecastResultsProps> = ({
       };
       
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:8000/download_multi_forecast_excel', {
+      const response = await fetch('http://107.23.151.16:8000/download_multi_forecast_excel', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

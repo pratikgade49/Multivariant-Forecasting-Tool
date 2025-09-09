@@ -64,12 +64,11 @@ export const DataViewer: React.FC<DataViewerProps> = ({
 
   const handleFilterChange = (field: keyof DataViewRequest, value: string | number) => {
     setFilters(prev => ({
-      ...prev,
+      ...prev, // Add the spread operator here
       [field]: value,
-      page: field !== 'page' ? 1 : value // Reset to page 1 when filters change
+      page: field !== 'page' ? 1 : value
     }));
   };
-
   const applyFilters = () => {
     setFilters(prev => ({ ...prev, page: 1 }));
     loadData();

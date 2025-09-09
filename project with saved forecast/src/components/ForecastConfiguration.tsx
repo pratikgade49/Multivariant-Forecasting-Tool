@@ -273,19 +273,19 @@ export const ForecastConfiguration: React.FC<ForecastConfigurationProps> = ({
         }
 
         // Fetch products filtered by selected customers and locations
-        const productsResponse = await axios.post('http://localhost:8000/database/filtered_options', {
+        const productsResponse = await axios.post('http://107.23.151.16:8000/database/filtered_options', {
           selectedCustomers: config.selectedCustomers || [],
           selectedLocations: config.selectedLocations || []
         }, { headers });
 
         // Fetch customers filtered by selected products and locations
-        const customersResponse = await axios.post('http://localhost:8000/database/filtered_options', {
+        const customersResponse = await axios.post('http://107.23.151.16:8000/database/filtered_options', {
           selectedProducts: config.selectedProducts || [],
           selectedLocations: config.selectedLocations || []
         }, { headers });
 
         // Fetch locations filtered by selected products and customers
-        const locationsResponse = await axios.post('http://localhost:8000/database/filtered_options', {
+        const locationsResponse = await axios.post('http://107.23.151.16:8000/database/filtered_options', {
           selectedProducts: config.selectedProducts || [],
           selectedCustomers: config.selectedCustomers || []
         }, { headers });
