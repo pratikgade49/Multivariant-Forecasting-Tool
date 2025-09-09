@@ -4600,6 +4600,34 @@ async def get_saved_forecasts(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting saved forecasts: {str(e)}")
 
+@app.post("/saved_forecasts")
+async def save_forecast(
+    request: SavedForecastRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Save a forecast result"""
+    try:
+        saved_forecast = SavedForecastResult(
+            user_id=current_user.id,
+            name=request.name,
+            description=request.description,
+            forecast_config=json.dumps(request.forecast_config.dict()),
+            forecast_data=json.dumps(request.forecast_data.dict())
+        )
+
+        db.add(saved_forecast)
+        db.commit()
+        db.refresh(saved_forecast)
+
+        return {
+            "message": "Forecast saved successfully",
+            "id": saved_forecast.id
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error saving forecast: {str(e)}")
+
 @app.delete("/saved_forecasts/{forecast_id}")
 async def delete_saved_forecast(
     forecast_id: int,
